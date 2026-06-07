@@ -1,85 +1,85 @@
-# PowerShell UTF-8 Encoding Fix for API Requests
+# Correção de Encoding UTF-8 no PowerShell para Requisições de API
 
-## About this skill
+## Sobre esta skill
 
-**What it does:** Diagnoses and fixes UTF-8 encoding corruption in PowerShell 5.1 scripts that send JSON to REST APIs — the issue where accented characters (á, é, ã, ú, ç) arrive as `?` or `°` on the receiving system.
+**O que faz:** Diagnostica e corrige a corrupção de encoding UTF-8 em scripts PowerShell 5.1 que enviam JSON para APIs REST — o problema onde caracteres acentuados (á, é, ã, ú, ç) chegam como `?` ou `°` no sistema de destino.
 
-**Who it's for:** Anyone on Windows using PowerShell 5.1 to integrate with REST APIs, CRMs, webhooks, or any HTTP endpoint that expects UTF-8 encoded JSON.
+**Para quem é:** Qualquer pessoa no Windows usando PowerShell 5.1 para integrar com APIs REST, CRMs, webhooks ou qualquer endpoint HTTP que espera JSON em UTF-8.
 
-**Why it was created:** Discovered while building a GoHighLevel CRM integration — custom field names and contact data with Portuguese accented characters were arriving corrupted. Hours of debugging pointed to a single root cause: PowerShell 5.1's default encoding is Windows-1252, not UTF-8. The fix is a two-line change, but the problem is invisible and non-obvious. This skill exists so no one has to rediscover it from scratch.
+**Por que foi criada:** Descoberta durante a construção de uma integração com o CRM GoHighLevel — nomes de campos personalizados e dados de contato com caracteres acentuados chegavam corrompidos. Horas de investigação apontaram para uma única causa raiz: o encoding padrão do PowerShell 5.1 é Windows-1252, não UTF-8. A correção é uma mudança de duas linhas, mas o problema é invisível e nada óbvio. Esta skill existe para que ninguém precise redescobri-lo do zero.
 
-**Benefit:** Instead of spending hours wondering why your data looks fine locally but arrives broken in the API, run `/powershell-utf8-fix`, get an instant diagnosis, and apply the correct fix in minutes.
+**Benefício:** Em vez de gastar horas tentando entender por que os dados parecem corretos localmente mas chegam quebrados na API, execute `/powershell-utf8-fix`, obtenha um diagnóstico imediato e aplique a correção certa em minutos.
 
 ---
 
-## When to use this skill
+## Quando usar esta skill
 
-Invoke with `/powershell-utf8-fix` when:
-- Characters like á, é, ã, ú, ç appear as `?`, `°`, or other strange symbols in the target system (CRM, API, database, webhook)
-- You are running **PowerShell 5.1** (default on Windows) and making POST or PUT requests with JSON bodies
-- Any `Invoke-RestMethod` or `Invoke-WebRequest` call that sends a `-Body` with accented characters
+Invoque com `/powershell-utf8-fix` quando:
+- Caracteres como á, é, ã, ú, ç aparecem como `?`, `°` ou outros símbolos estranhos no sistema de destino (CRM, API, banco de dados, webhook)
+- Você está rodando **PowerShell 5.1** (padrão no Windows) e fazendo requisições POST ou PUT com corpo JSON
+- Qualquer chamada `Invoke-RestMethod` ou `Invoke-WebRequest` que envia um `-Body` com caracteres acentuados
 
-## Diagnosis
+## Diagnóstico
 
-First, check the PowerShell version:
+Primeiro, verifique a versão do PowerShell:
 
 ```powershell
 $PSVersionTable.PSVersion
 ```
 
-- **Major = 5** → you have the problem. Apply the fix below.
-- **Major = 7+** → UTF-8 is default. No fix needed.
+- **Major = 5** → você tem o problema. Aplique a correção abaixo.
+- **Major = 7+** → UTF-8 já é o padrão. Nenhuma correção necessária.
 
-## Root cause
+## Causa raiz
 
-PowerShell 5.1 uses Windows-1252 encoding by default when building HTTP request bodies. Modern APIs expect UTF-8. The byte mismatch causes accented characters to arrive corrupted on the receiving end.
+O PowerShell 5.1 usa o encoding Windows-1252 por padrão ao construir corpos de requisições HTTP. APIs modernas esperam UTF-8. A incompatibilidade de bytes faz com que os caracteres acentuados cheguem corrompidos no sistema receptor.
 
-## The fix
+## A correção
 
-**Before (broken):**
+**Antes (quebrado):**
 ```powershell
 $json = @{ name = "Campo com Ação" } | ConvertTo-Json
 Invoke-RestMethod -Uri $url -Headers $headers -Method POST -Body $json
 ```
 
-**After (correct):**
+**Depois (correto):**
 ```powershell
 $json  = @{ name = "Campo com Ação" } | ConvertTo-Json
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
 Invoke-RestMethod -Uri $url -Headers $headers -Method POST -Body $bytes
 ```
 
-The only change: convert `$json` to a UTF-8 byte array before passing it as `-Body`. Apply this to **every** POST and PUT request that includes text with accented characters.
+A única mudança: converter `$json` para um array de bytes UTF-8 antes de passá-lo como `-Body`. Aplique isso em **toda** requisição POST e PUT que inclua texto com caracteres acentuados.
 
-## How to apply to existing scripts
+## Como aplicar em scripts existentes
 
-Search the script for every `-Body $json` or `-Body $payload` pattern and replace with the two-line version:
+Procure no script por todo padrão `-Body $json` ou `-Body $payload` e substitua pela versão de duas linhas:
 
 ```powershell
-# Replace this pattern anywhere it appears:
+# Substitua este padrão onde ele aparecer:
 -Body $json
 
-# With this:
+# Por isto:
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
-# ...then use -Body $bytes
+# ...depois use -Body $bytes
 ```
 
-## Permanent solution: upgrade to PowerShell 7
+## Solução permanente: atualizar para o PowerShell 7
 
-PowerShell 7+ uses UTF-8 by default and is free. Install via:
+O PowerShell 7+ usa UTF-8 por padrão e é gratuito. Instale via:
 
 ```powershell
 winget install --id Microsoft.PowerShell --source winget
 ```
 
-It installs **side by side** with 5.1 — does not replace it. After installing, use `pwsh` instead of `powershell` to launch it. No workaround needed in version 7+.
+Ele instala **lado a lado** com o 5.1 — não o substitui. Após instalar, use `pwsh` em vez de `powershell` para iniciá-lo. Nenhum workaround necessário na versão 7+.
 
-## This fix applies to any system
+## Esta correção se aplica a qualquer sistema
 
-This is not specific to GoHighLevel or any particular API. The same fix applies whenever PowerShell 5.1 sends JSON to:
-- Any REST API (HubSpot, ClickUp, ActiveCampaign, Asana, etc.)
+Não é específico para GoHighLevel ou qualquer API em particular. A mesma correção se aplica sempre que o PowerShell 5.1 envia JSON para:
+- Qualquer API REST (HubSpot, ClickUp, ActiveCampaign, Asana, etc.)
 - Webhooks
-- Databases via HTTP
-- File creation via API
+- Bancos de dados via HTTP
+- Criação de arquivos via API
 
-The problem is in PowerShell, not in the receiving system.
+O problema está no PowerShell, não no sistema receptor.

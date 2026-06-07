@@ -1,14 +1,14 @@
 # Claude Code Skills
 
-A collection of custom skills (slash commands) for [Claude Code](https://claude.ai/code) built from real-world problems.
+Uma coleção de skills (slash commands) para o [Claude Code](https://claude.ai/code) criadas a partir de problemas reais.
 
-## How to use a skill
+## Como usar uma skill
 
-Copy any `.md` file from the `commands/` folder into your global Claude Code commands directory:
+Copie o arquivo `.md` da pasta `commands/` para o diretório global de comandos do Claude Code:
 
 **Windows:**
 ```
-C:\Users\<your-username>\.claude\commands\
+C:\Users\<seu-usuario>\.claude\commands\
 ```
 
 **Mac / Linux:**
@@ -16,21 +16,21 @@ C:\Users\<your-username>\.claude\commands\
 ~/.claude/commands/
 ```
 
-Then invoke it in any Claude Code session with `/skill-name` (the filename without `.md`).
+Depois é só invocar em qualquer sessão do Claude Code com `/nome-da-skill` (o nome do arquivo sem o `.md`).
 
 ---
 
-## Available skills
+## Skills disponíveis
 
 ### `/powershell-utf8-fix`
-**File:** `commands/powershell-utf8-fix.md`
+**Arquivo:** `commands/powershell-utf8-fix.md`
 
-Diagnoses and fixes UTF-8 encoding corruption in PowerShell 5.1 scripts that send JSON to REST APIs.
+Diagnostica e corrige o problema de corrupção de encoding UTF-8 em scripts PowerShell 5.1 que enviam JSON para APIs REST.
 
-Use it when accented characters (á, é, ã, ú, ç) arrive as `?` or `°` on the receiving system (CRM, API, webhook, database). Covers diagnosis, the two-line fix, how to update existing scripts, and the permanent solution (upgrade to PowerShell 7).
+Use quando caracteres acentuados (á, é, ã, ú, ç) chegam como `?` ou `°` no sistema de destino (CRM, API, webhook, banco de dados). Cobre o diagnóstico, a correção em duas linhas, como atualizar scripts existentes e a solução permanente (atualizar para o PowerShell 7).
 
 ---
 
-## Contributing
+## Contribuindo
 
-Have a skill worth sharing? Open a PR with your `.md` file in the `commands/` folder.
+Tem uma skill que vale compartilhar? Abra um PR com seu arquivo `.md` na pasta `commands/`.
