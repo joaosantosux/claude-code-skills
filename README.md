@@ -1,10 +1,10 @@
 # Claude Code Skills
 
-Uma coleção de skills (slash commands) para o [Claude Code](https://claude.ai/code) criadas a partir de problemas reais.
+Skills que fui criando conforme fui usando o Claude Code e encontrando situações que achei que valiam guardar.
 
-## Como usar uma skill
+## Como usar
 
-Copie o arquivo `.md` da pasta `commands/` para o diretório global de comandos do Claude Code:
+Copie o arquivo `.md` da pasta `commands/` para o diretório de comandos do Claude Code:
 
 **Windows:**
 ```
@@ -16,7 +16,7 @@ C:\Users\<seu-usuario>\.claude\commands\
 ~/.claude/commands/
 ```
 
-Depois é só invocar em qualquer sessão do Claude Code com `/nome-da-skill` (o nome do arquivo sem o `.md`).
+Depois é só chamar com `/nome-da-skill` em qualquer sessão do Claude Code.
 
 ---
 
@@ -25,12 +25,10 @@ Depois é só invocar em qualquer sessão do Claude Code com `/nome-da-skill` (o
 ### `/powershell-utf8-fix`
 **Arquivo:** `commands/powershell-utf8-fix.md`
 
-Diagnostica e corrige o problema de corrupção de encoding UTF-8 em scripts PowerShell 5.1 que enviam JSON para APIs REST.
-
-Use quando caracteres acentuados (á, é, ã, ú, ç) chegam como `?` ou `°` no sistema de destino (CRM, API, webhook, banco de dados). Cobre o diagnóstico, a correção em duas linhas, como atualizar scripts existentes e a solução permanente (atualizar para o PowerShell 7).
+Quando eu fui inserir dados com acentuação numa API via PowerShell, os caracteres chegavam quebrados no sistema — `á` virava `?`, `ç` virava `°`. Gastei um tempo até entender o que estava acontecendo. Essa skill diagnostica o problema e aplica a correção certa.
 
 ---
 
 ## Contribuindo
 
-Tem uma skill que vale compartilhar? Abra um PR com seu arquivo `.md` na pasta `commands/`.
+Tem uma skill que resolveu um problema chato pra você? Abre um PR com o `.md` na pasta `commands/`.
