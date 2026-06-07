@@ -26,9 +26,3 @@ Depois é só chamar com `/nome-da-skill` em qualquer sessão do Claude Code.
 **Arquivo:** `commands/powershell-utf8-fix.md`
 
 Quando eu fui inserir dados com acentuação numa API via PowerShell, os caracteres chegavam quebrados no sistema — `á` virava `?`, `ç` virava `°`. Gastei um tempo até entender o que estava acontecendo. Essa skill diagnostica o problema e aplica a correção certa.
-
----
-
-## Contribuindo
-
-Tem uma skill que resolveu um problema chato pra você? Abre um PR com o `.md` na pasta `commands/`.
